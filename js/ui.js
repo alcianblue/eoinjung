@@ -225,16 +225,61 @@ function showToast(msg, duration = 1800) {
 }
 
 /** 결과 모달 */
+let _countdownTimer = null;
+
 function showResult(state) {
   const modal = document.getElementById('modal-result');
   document.getElementById('result-title').textContent =
-    state.status === 'won' ? '정답!' : '아쉬워요...';
+    state.status === 'won' ? '정답! 어인정 🏆' : '아쉬워요...';
   document.getElementById('result-answer').textContent =
     state.status === 'lost' ? `정답: ${state.answer}` : '';
 
   const stats = Stats.loadStats();
   document.getElementById('result-stats').innerHTML = buildStatsSummaryHTML(stats);
+
+  // 카운트다운 타이머 시작
+  _startCountdown();
+
   modal.classList.remove('hidden');
+}
+
+function _startCountdown() {
+  const el = document.getElementById('next-countdown');
+  if (!el) return;
+  if (_countdownTimer) clearInterval(_countdownTimer);
+  const tick = () => { el.textContent = Daily.getTimeUntilNextWord(); };
+  tick();
+  _countdownTimer = setInterval(tick, 1000);
+}
+
+/** 클립보드 공유 */
+function shareResult() {
+  const text = Game.buildShareText();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사됐어요!'));
+  } else {
+    showToast(text);
+  }
+}
+
+/** 카카오톡 공유 */
+function shareKakao() {
+  const text = Game.buildShareText();
+  const url  = 'https://alcianblue.github.io/eoinjung/';
+
+  if (window.Kakao?.isInitialized()) {
+    Kakao.Share.sendDefault({
+      objectType: 'text',
+      text: text,
+      link: { mobileWebUrl: url, webUrl: url },
+    });
+  } else {
+    // SDK 미초기화 → 클립보드 fallback
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사됐어요!'));
+    }
+    showToast('카카오 SDK가 준비되지 않아 클립보드로 복사했어요.');
+  }
 }
 
 /** 통계 모달 */
@@ -266,16 +311,6 @@ function buildDistributionHTML(stats) {
     </div>`;
   }).join('');
   return `<div class="distribution">${rows}</div>`;
-}
-
-/** 공유 */
-function shareResult() {
-  const text = Game.buildShareText();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사됐어요!'));
-  } else {
-    showToast('공유: ' + text);
-  }
 }
 
 // ===== 무한 모드 렌더링 =====
@@ -316,6 +351,7 @@ function bindModals() {
 
   document.getElementById('btn-share').addEventListener('click', shareResult);
   document.getElementById('btn-share2').addEventListener('click', shareResult);
+  document.getElementById('btn-kakao-share').addEventListener('click', shareKakao);
 
   // 힌트 버튼
   document.getElementById('btn-hint').addEventListener('click', () => {
@@ -377,6 +413,6 @@ function _setKeyboardTarget(mode) {
   };
 }
 
-window.UI = { init, render, renderHint, renderInfinite, revealRow, shakeRow, showToast, showResult, showInfiniteResult, updateKeyboard };
+window.UI = { init, render, renderHint, renderInfinite, revealRow, shakeRow, showToast, showResult, showInfiniteResult, updateKeyboard, shareKakao };
 
 document.addEventListener('DOMContentLoaded', () => UI.init());

@@ -12,6 +12,24 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="어인정" />
   <meta name="description" content="오늘의 어휘력 테스트! 5글자 단어를 맞히고 친구들에게 어인정 받으세요." />
+
+  <!-- Open Graph (카카오톡·슬랙·디스코드 링크 미리보기) -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="어인정 — 오늘의 어휘력 테스트" />
+  <meta property="og:description" content="5글자 단어 맞히고 친구들에게 어인정 받아봐! 자모 단위 힌트로 더 스마트하게." />
+  <meta property="og:image"       content="https://alcianblue.github.io/eoinjung/og-image.png" />
+  <meta property="og:url"         content="https://alcianblue.github.io/eoinjung/" />
+  <meta property="og:locale"      content="ko_KR" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:title"      content="어인정 — 오늘의 어휘력 테스트" />
+  <meta name="twitter:description"content="5글자 단어 맞히고 어인정 받아봐!" />
+  <meta name="twitter:image"      content="https://alcianblue.github.io/eoinjung/og-image.png" />
+
+  <!-- 카카오 JavaScript SDK -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+          integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+          crossorigin="anonymous"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -111,7 +129,12 @@
       <h2 id="result-title"></h2>
       <p id="result-answer"></p>
       <div id="result-stats"></div>
+      <div id="next-timer" class="next-timer">
+        <span class="next-timer-label">다음 어인정까지</span>
+        <span id="next-countdown" class="next-timer-count">--:--:--</span>
+      </div>
       <button id="btn-share2" class="share-btn">결과 공유 📋</button>
+      <button id="btn-kakao-share" class="kakao-btn">카카오톡 공유 💬</button>
       <button id="btn-infinite" class="infinite-btn">무한모드 도전 🔁</button>
     </div>
   </div>
@@ -147,18 +170,25 @@
     <!-- 앱인토스 / AdSense 광고 코드를 여기에 삽입 -->
   </div>
 
-  <script src="js/ad.js?v=4"></script>
-  <script src="js/hangul.js?v=4"></script>
-  <script src="js/words.js?v=4"></script>
-  <script src="js/daily.js?v=4"></script>
-  <script src="js/stats.js?v=4"></script>
-  <script src="js/game.js?v=4"></script>
-  <script src="js/keyboard.js?v=4"></script>
-  <script src="js/ui.js?v=4"></script>
+  <script src="js/ad.js?v=5"></script>
+  <script src="js/hangul.js?v=5"></script>
+  <script src="js/words.js?v=5"></script>
+  <script src="js/daily.js?v=5"></script>
+  <script src="js/stats.js?v=5"></script>
+  <script src="js/game.js?v=5"></script>
+  <script src="js/keyboard.js?v=5"></script>
+  <script src="js/ui.js?v=5"></script>
   <script>
+    // 카카오 SDK 초기화 (본인 JavaScript 키로 교체)
+    if (window.Kakao && !Kakao.isInitialized()) {
+      Kakao.init('YOUR_KAKAO_JS_KEY');  // TODO: 카카오 JavaScript 키 입력
+    }
+
+    // Service Worker 등록 (경로 자동 감지)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        const swPath = location.pathname.replace(/\/$/, '') + '/sw.js';
+        navigator.serviceWorker.register(swPath).catch(() => {});
       });
     }
   </script>
