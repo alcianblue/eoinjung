@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#121213" media="(prefers-color-scheme: dark)" />
+  <title>어인정 — 오늘의 어휘력 테스트</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="어인정" />
+  <meta name="description" content="오늘의 어휘력 테스트! 5글자 단어를 맞히고 친구들에게 어인정 받으세요." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 헤더 -->
+  <header>
+    <button id="btn-stats" class="icon-btn" title="통계">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="12" width="4" height="9"/><rect x="10" y="6" width="4" height="15"/>
+        <rect x="17" y="2" width="4" height="19"/>
+      </svg>
+    </button>
+    <h1>어인정</h1>
+    <button id="btn-help" class="icon-btn" title="도움말">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- 광고 배너 (상단) -->
+  <div id="ad-top" class="ad-banner">
+    <!-- 앱인토스 / AdSense 광고 코드를 여기에 삽입 -->
+    <!-- 예: <ins class="adsbygoogle" ...></ins> -->
+  </div>
+
+  <!-- 게임 보드 -->
+  <main>
+    <!-- 힌트 바 -->
+    <div id="hint-bar">
+      <span id="hint-category" class="hint-tag"></span>
+      <span id="hint-difficulty" class="hint-tag difficulty"></span>
+      <button id="btn-hint" class="hint-btn hidden">💡 힌트 보기</button>
+    </div>
+    <div id="hint-box" class="hidden">
+      <span id="hint-text"></span>
+    </div>
+
+    <div id="board-container">
+      <div id="board"></div>
+    </div>
+
+    <!-- 가상 키보드 -->
+    <div id="keyboard">
+      <div class="key-row" id="key-row-cho"></div>
+      <div class="key-row" id="key-row-jung"></div>
+      <div class="key-row" id="key-row-action">
+        <button class="key wide" id="key-enter">입력</button>
+        <div id="key-row-jong-wrap"></div>
+        <button class="key wide" id="key-backspace">⌫</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 토스트 메시지 -->
+  <div id="toast-container"></div>
+
+  <!-- 도움말 모달 -->
+  <div id="modal-help" class="modal hidden">
+    <div class="modal-box">
+      <button class="modal-close" data-target="modal-help">✕</button>
+      <h2>게임 방법</h2>
+      <p>5글자 단어를 <strong>6번</strong> 안에 맞추세요.</p>
+      <hr />
+      <p>각 글자는 초성·중성·종성으로 나뉘어 힌트를 드립니다.</p>
+      <div class="example-row">
+        <div class="tile done" data-cho="correct" data-jung="correct" data-jong="none">사</div>
+        <div class="tile done" data-cho="absent" data-jung="present" data-jong="absent">탕</div>
+        <div class="tile done" data-cho="absent" data-jung="absent" data-jong="none">수</div>
+        <div class="tile done" data-cho="absent" data-jung="absent" data-jong="none">수</div>
+        <div class="tile done" data-cho="correct" data-jung="correct" data-jong="none">다</div>
+      </div>
+      <ul class="legend">
+        <li><span class="dot correct"></span> 초록 — 정확한 위치</li>
+        <li><span class="dot present"></span> 노랑 — 단어에 있지만 위치 다름</li>
+        <li><span class="dot absent"></span> 회색 — 단어에 없음</li>
+      </ul>
+      <p class="hint-note">💡 하나의 타일 안에서 초성·중성·종성이 각각 다른 색일 수 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- 통계 모달 -->
+  <div id="modal-stats" class="modal hidden">
+    <div class="modal-box">
+      <button class="modal-close" data-target="modal-stats">✕</button>
+      <h2>통계</h2>
+      <div id="stats-summary"></div>
+      <div id="guess-distribution"></div>
+      <button id="btn-share" class="share-btn">결과 공유 📋</button>
+    </div>
+  </div>
+
+  <!-- 게임 종료 오버레이 -->
+  <div id="modal-result" class="modal hidden">
+    <div class="modal-box">
+      <button class="modal-close" data-target="modal-result">✕</button>
+      <h2 id="result-title"></h2>
+      <p id="result-answer"></p>
+      <div id="result-stats"></div>
+      <button id="btn-share2" class="share-btn">결과 공유 📋</button>
+      <button id="btn-infinite" class="infinite-btn">무한모드 도전 🔁</button>
+    </div>
+  </div>
+
+  <!-- 무한 모드 광고 모달 -->
+  <div id="modal-ad" class="modal hidden">
+    <div class="modal-box">
+      <h2>무한모드 시작</h2>
+      <p>광고를 시청하면 무한모드를 즐길 수 있습니다!</p>
+      <div id="ad-infinite" class="ad-slot">
+        <!-- 앱인토스 보상형 광고 코드 삽입 위치 -->
+        <div class="ad-mock">📺 광고 시청 (5초)</div>
+      </div>
+      <button id="btn-ad-skip" class="share-btn" disabled>광고 시청 후 시작</button>
+      <button class="modal-close" data-target="modal-ad" style="position:static;margin-top:8px;width:100%;padding:10px;background:var(--border);border-radius:12px;font-size:0.9rem;">취소</button>
+    </div>
+  </div>
+
+  <!-- 무한모드 결과 -->
+  <div id="modal-infinite-result" class="modal hidden">
+    <div class="modal-box">
+      <button class="modal-close" data-target="modal-infinite-result">✕</button>
+      <h2 id="inf-result-title"></h2>
+      <p id="inf-result-answer"></p>
+      <p id="inf-streak"></p>
+      <button id="btn-infinite-next" class="share-btn">다음 문제 🔁</button>
+      <button id="btn-infinite-quit" class="infinite-btn" style="margin-top:8px;">그만하기</button>
+    </div>
+  </div>
+
+  <!-- 광고 배너 (하단) -->
+  <div id="ad-bottom" class="ad-banner">
+    <!-- 앱인토스 / AdSense 광고 코드를 여기에 삽입 -->
+  </div>
+
+  <script src="js/ad.js?v=4"></script>
+  <script src="js/hangul.js?v=4"></script>
+  <script src="js/words.js?v=4"></script>
+  <script src="js/daily.js?v=4"></script>
+  <script src="js/stats.js?v=4"></script>
+  <script src="js/game.js?v=4"></script>
+  <script src="js/keyboard.js?v=4"></script>
+  <script src="js/ui.js?v=4"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

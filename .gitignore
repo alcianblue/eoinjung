@@ -1,0 +1,17 @@
+# 개발 도구 결과물 (배포 불필요)
+tools/raw_words.json
+tools/tagged_words.json
+
+# 환경변수 / API 키
+.env
+*.env
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 아이콘 생성 스크립트 (배포 불필요)
+icons/generate.js
+
+# Node
+node_modules/
