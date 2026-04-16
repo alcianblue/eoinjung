@@ -229,12 +229,10 @@ function submitGuess() {
     return;
   }
 
-  if (!VALID_WORDS.includes(word)) {
-    UI && UI.showToast('단어 목록에 없는 단어입니다');
+  // 5글자 완성 한글 여부만 검사 (단어 목록 제한 없음)
+  if (![...word].every(ch => ch.charCodeAt(0) >= 0xAC00 && ch.charCodeAt(0) <= 0xD7A3)) {
+    UI && UI.showToast('완성된 한글 5글자를 입력해주세요', 2000);
     UI && UI.shakeRow(state.guesses.length);
-    state.currentWord  = '';
-    state.currentInput = [];
-    UI && UI.render(state);
     return;
   }
 
