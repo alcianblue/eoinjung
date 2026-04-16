@@ -31,11 +31,14 @@ function buildKeyboard() {
   });
 }
 
+const VOWELS = new Set(['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ']);
+
 function makeKey(jamo) {
   const btn = document.createElement('button');
   btn.className = 'key';
   btn.textContent = jamo;
   btn.dataset.jamo = jamo;
+  if (VOWELS.has(jamo)) btn.dataset.vowel = 'true';
   btn.addEventListener('click', () => Game.inputJamo(jamo));
   return btn;
 }

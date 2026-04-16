@@ -390,6 +390,15 @@ main {
 .key:active { filter: brightness(0.85); }
 .key.wide   { min-width: 56px; max-width: 70px; font-size: 0.85rem; }
 
+/* 모음 키 — 자음과 시각적으로 구분 */
+.key[data-vowel="true"] {
+  background: #5a6a8a;
+  color: #fff;
+}
+@media (prefers-color-scheme: light) {
+  .key[data-vowel="true"] { background: #7b92c4; color: #fff; }
+}
+
 .key[data-state="correct"] { background: var(--key-correct); color: white; }
 .key[data-state="present"] { background: var(--key-present); color: white; }
 .key[data-state="absent"]  { background: var(--key-absent);  color: white; }
