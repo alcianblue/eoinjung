@@ -267,18 +267,41 @@ function shareKakao() {
   const text = Game.buildShareText();
   const url  = 'https://alcianblue.github.io/eoinjung/';
 
-  if (window.Kakao?.isInitialized()) {
-    Kakao.Share.sendDefault({
-      objectType: 'text',
-      text: text,
-      link: { mobileWebUrl: url, webUrl: url },
-    });
-  } else {
-    // SDK 미초기화 → 클립보드 fallback
+  const fallback = () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사됐어요!'));
+      navigator.clipboard.writeText(text)
+        .then(() => showToast('클립보드에 복사됐어요! 카카오톡에 붙여넣기 하세요 📋'))
+        .catch(() => showToast(text, 4000));
+    } else {
+      showToast(text, 4000);
     }
-    showToast('카카오 SDK가 준비되지 않아 클립보드로 복사했어요.');
+  };
+
+  if (!window.Kakao) {
+    showToast('카카오 SDK 로드 실패 — 클립보드에 복사했어요 📋');
+    fallback();
+    return;
+  }
+
+  if (!Kakao.isInitialized()) {
+    try { Kakao.init('8cd72c77ddba98894175174b2aa1bf83'); } catch(e) {}
+  }
+
+  try {
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: `어인정 ${text.split('\n')[0]}`,
+        description: text,
+        imageUrl: 'https://alcianblue.github.io/eoinjung/icons/icon-192.png',
+        link: { mobileWebUrl: url, webUrl: url },
+      },
+      buttons: [{ title: '나도 도전하기', link: { mobileWebUrl: url, webUrl: url } }],
+    });
+  } catch (err) {
+    console.warn('카카오 공유 실패:', err);
+    showToast('카카오 공유 실패 — 클립보드에 복사했어요 📋');
+    fallback();
   }
 }
 
