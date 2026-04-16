@@ -399,6 +399,27 @@ main {
   .key[data-vowel="true"] { background: #7b92c4; color: #fff; }
 }
 
+/* ===== Shift (쌍자음) 버튼 ===== */
+.shift-btn {
+  background: #4a4a4c;
+  color: #fff;
+  font-size: 1rem;
+}
+.shift-btn.shift-active {
+  background: #b59f3b;
+  color: #fff;
+}
+/* 쌍자음으로 전환된 키 강조 */
+.key.shifted {
+  background: #5a5a20;
+  color: #ffe066;
+}
+@media (prefers-color-scheme: light) {
+  .shift-btn           { background: #818384; color: #fff; }
+  .shift-btn.shift-active { background: #c9b458; color: #fff; }
+  .key.shifted         { background: #e8d96a; color: #333; }
+}
+
 .key[data-state="correct"] { background: var(--key-correct); color: white; }
 .key[data-state="present"] { background: var(--key-present); color: white; }
 .key[data-state="absent"]  { background: var(--key-absent);  color: white; }
