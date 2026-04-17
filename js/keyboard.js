@@ -16,19 +16,20 @@ let _shiftOn = false;
 function buildKeyboard() {
   const row1     = document.getElementById('key-row-cho');
   const row2     = document.getElementById('key-row-jung');
+  const jongRow  = document.getElementById('key-row-jong');
   const jongWrap = document.getElementById('key-row-jong-wrap');
 
   ROW1.forEach(j => row1.appendChild(makeKey(j)));
   ROW2.forEach(j => row2.appendChild(makeKey(j)));
 
-  // Shift 버튼 + 자음 + 백스페이스 행
+  // ⇧ Shift 버튼을 받침 행 맨 앞에 삽입
   const shiftBtn = document.createElement('button');
-  shiftBtn.className  = 'key wide shift-btn';
-  shiftBtn.id         = 'key-shift';
+  shiftBtn.className   = 'key shift-btn';
+  shiftBtn.id          = 'key-shift';
   shiftBtn.textContent = '⇧';
   shiftBtn.title       = '쌍자음 (ㄲㄸㅃㅉㅆ)';
   shiftBtn.addEventListener('click', toggleShift);
-  jongWrap.parentElement.insertBefore(shiftBtn, jongWrap);
+  jongRow.insertBefore(shiftBtn, jongWrap);
 
   ROW3.forEach(j => jongWrap.appendChild(makeKey(j)));
 

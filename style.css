@@ -372,9 +372,9 @@ main {
 }
 
 .key {
-  height: 56px;
-  min-width: 32px;
-  padding: 0 6px;
+  height: 50px;
+  min-width: 30px;
+  padding: 0 4px;
   background: var(--key-bg);
   color: var(--key-text);
   border: none;
@@ -388,15 +388,25 @@ main {
   flex: 1;
   max-width: 42px;
   transition: background 0.2s;
-  touch-action: manipulation;       /* 300ms 클릭 딜레이 제거 */
-  -webkit-tap-highlight-color: transparent; /* iOS 탭 파란 플래시 제거 */
-  -webkit-appearance: none;         /* iOS 기본 버튼 스타일 제거 */
-  outline: none;                    /* 포커스 링 제거 */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  outline: none;
   user-select: none;
   -webkit-user-select: none;
 }
 .key:active { filter: brightness(0.85); }
-.key.wide   { min-width: 56px; max-width: 70px; font-size: 0.85rem; }
+.key.wide   { min-width: 50px; max-width: 70px; font-size: 0.85rem; }
+
+/* 입력 버튼 — 전체 너비 */
+#key-row-action { gap: 0; }
+#key-enter {
+  max-width: none;
+  width: 100%;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  border-radius: 8px;
+}
 
 /* 모음 키 — 자음과 시각적으로 구분 */
 .key[data-vowel="true"] {
@@ -412,6 +422,8 @@ main {
   background: #4a4a4c;
   color: #fff;
   font-size: 1rem;
+  min-width: 44px;
+  max-width: 56px;
 }
 .shift-btn.shift-active {
   background: #b59f3b;
