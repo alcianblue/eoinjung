@@ -95,9 +95,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100dvh;
+  min-height: 100vh;       /* fallback: iOS 15 이하 */
+  min-height: 100dvh;      /* iOS 16+ / Chrome 108+ */
   overflow-x: hidden;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ===== 헤더 ===== */
@@ -345,7 +347,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 0 4px 8px;
+  /* 홈 인디케이터(iPhone X 이상) safe area 확보 */
+  padding: 0 4px max(8px, env(safe-area-inset-bottom));
 }
 
 .key-row {
@@ -385,7 +388,12 @@ main {
   flex: 1;
   max-width: 42px;
   transition: background 0.2s;
-  touch-action: manipulation;
+  touch-action: manipulation;       /* 300ms 클릭 딜레이 제거 */
+  -webkit-tap-highlight-color: transparent; /* iOS 탭 파란 플래시 제거 */
+  -webkit-appearance: none;         /* iOS 기본 버튼 스타일 제거 */
+  outline: none;                    /* 포커스 링 제거 */
+  user-select: none;
+  -webkit-user-select: none;
 }
 .key:active { filter: brightness(0.85); }
 .key.wide   { min-width: 56px; max-width: 70px; font-size: 0.85rem; }

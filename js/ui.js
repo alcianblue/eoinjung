@@ -252,14 +252,40 @@ function _startCountdown() {
   _countdownTimer = setInterval(tick, 1000);
 }
 
-/** 클립보드 공유 */
+/** 클립보드/네이티브 공유 */
 function shareResult() {
   const text = Game.buildShareText();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사됐어요!'));
-  } else {
-    showToast(text);
+
+  // iOS Safari 등 navigator.share 지원 시 네이티브 공유 시트 사용
+  if (navigator.share) {
+    navigator.share({
+      title: '어인정',
+      text: text,
+      url: 'https://alcianblue.github.io/eoinjung/',
+    }).catch(() => {/* 취소 또는 오류 → 무시 */});
+    return;
   }
+
+  // 클립보드 API fallback
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('클립보드에 복사됐어요! 📋'))
+      .catch(() => _legacyCopy(text));
+  } else {
+    _legacyCopy(text);
+  }
+}
+
+/** execCommand 방식 클립보드 복사 (구형 브라우저 대비) */
+function _legacyCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast('클립보드에 복사됐어요! 📋'); }
+  catch { showToast('직접 복사해주세요:\n' + text, 4000); }
+  document.body.removeChild(ta);
 }
 
 /** 카카오톡 공유 */
