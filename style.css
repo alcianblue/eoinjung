@@ -367,7 +367,8 @@ main {
 #key-row-jong-wrap {
   display: flex;
   gap: 5px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;   /* 줄바꿈 금지 — 전용 행이므로 1줄에 전부 표시 */
+  flex: 1;
   justify-content: center;
 }
 
